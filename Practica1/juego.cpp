@@ -1,0 +1,135 @@
+#include "iJuego.h"
+#include "iColores.h"
+
+bool juegoFinalizado(const Juego juego) {
+	if (juego.bloqueado || juego.ganado)
+		return true;
+	return false;
+}
+
+std::istream& operator>> (std::istream& in, Juego& j) {
+	in >> j.tablero;
+	return in;
+}
+
+void mostrar(const Juego j) {
+	mostrar(j.tablero);
+}
+
+void siguienteTurno(Juego& juego) {
+	int n = 0;
+	Movimiento movimiento; 
+	Direccion direccionesPosibles[4];
+	do {
+		movimiento = pedirMovimiento(juego);
+		encontrarDireccionesPosibles(juego, movimiento.origen, direccionesPosibles, n);
+	} while (n == 0);
+	movimiento.dir = escogerDireccion(juego, direccionesPosibles, n);
+	aplicarMovimiento(juego, movimiento);
+	chequearBloqueo(juego);
+}
+
+std::string motivoFinPartida(const Juego juego) {
+	if (juego.bloqueado)
+		return "Has perdido. Es imposible realizar algun movimiento\n";
+	return "Has ganado.\n";
+}
+
+
+//Funciones auxiliares para implementar las anteriores
+Movimiento pedirMovimiento(const Juego juego) {
+	Movimiento movimiento;
+	do {
+		std::cout << "Escoja ficha: ";
+		std::cin >> movimiento;
+	} while (juego.tablero.celdas[movimiento.origen.fila][movimiento.origen.columna].tipo == NULA);
+
+	return movimiento;
+}
+
+void aplicarMovimiento(Juego& juego, const Movimiento mov) {
+	Posicion posOrigen = mov.origen;
+	Posicion posQuitar = mov.origen + mov.dir;
+	Posicion posOcupar = mov.origen + mov.dir + mov.dir;
+	quitarFicha(juego.tablero, posOrigen);
+	quitarFicha(juego.tablero, posQuitar);
+	ponerFicha(juego.tablero, posOcupar);
+	chequearGanador(juego, posOrigen);
+	chequearGanador(juego, posQuitar);
+}
+
+void encontrarDireccionesPosibles(const Juego juego, Posicion origen, Direccion direccionesPosibles[4], int& n) {
+	int i = 0;
+
+	while (i < 4) {
+		bool arriba = origen.columna <= 2 && DIRECCIONES[i].nombre == "Arriba"; //verifico si salgo del limite si voy por arriba
+		bool abajo = origen.columna >= 3 && DIRECCIONES[i].nombre == "Abajo"; //verifico si salgo del limite si voy por abajo
+		bool izquierda = origen.fila <= 2 && DIRECCIONES[i].nombre == "Izquierda"; //verifico si salgo del limite si voy por la izquierda
+		bool derecha = origen.fila >= 3 && DIRECCIONES[i].nombre == "Derecha"; //verifico si salgo del limite si voy por la derecha
+		if (!derecha && !izquierda && !arriba && !abajo) { //si todos son falsos significa que no salgo del limite
+			Posicion celdaFicha = origen + DIRECCIONES[i];
+			if (hayFicha(juego.tablero, celdaFicha)) {
+				Posicion celdaVacia = celdaFicha + DIRECCIONES[i];
+				if (hayVacia(juego.tablero, celdaVacia)) {
+					direccionesPosibles[n] = DIRECCIONES[i];
+					++n;
+				}
+			}
+		}
+		++i;
+	}
+}
+
+Direccion escogerDireccion(const Juego juego, const Direccion direccionesPosibles[4], const int numDirecciones) {
+	for (int i = 0; i < numDirecciones; ++i) {
+		std::cout << i + 1 << ".- " << direccionesPosibles[i].nombre << "\n";
+	}
+	std::cout << "Escoja una direccion (";
+	for (int i = 0; i < numDirecciones; ++i) {
+		if (i == numDirecciones - 1)
+			std::cout << i + 1 << "): ";
+		else
+			std::cout << i + 1 << ", ";
+	}
+	int seleccion;
+	std::cin >> seleccion;
+	return direccionesPosibles[seleccion];
+}
+
+void chequearGanador(Juego& juego, const Posicion pos) {
+	if (contarFichas(juego.tablero) && esMeta(juego.tablero, pos) && hayVacia(juego.tablero, pos)) {
+		juego.ganado = true;
+	}
+}
+
+void chequearBloqueo(Juego& juego) {
+	Direccion direccionesDisponibles[4];
+	int fichasMover = 0;
+	int i = 0, j = 0;
+	while (i < juego.tablero.filas && fichasMover < 1) {
+		while (j < juego.tablero.columnas && fichasMover < 1) {
+			if (hayFicha(juego.tablero, { i,j }))
+				encontrarDireccionesPosibles(juego, { i,j }, direccionesDisponibles, fichasMover);
+			++j;
+		}
+		++i;
+	}
+	if (fichasMover == 0) {
+		juego.bloqueado = true;
+	}
+}
+
+bool quiereVolverAJugar() {
+	char opcion;
+	do {
+		std::cout << "Nueva partida (S/N): ";
+		std::cin >> opcion;
+		if (opcion == 'S') {
+			return true;
+		}
+		else {
+			if (opcion == 'N')
+				return false;
+		}
+	} while (opcion != 'S' && opcion != 'N');
+}
