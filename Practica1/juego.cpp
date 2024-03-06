@@ -24,8 +24,14 @@ void siguienteTurno(Juego& juego) {
 		movimiento = pedirMovimiento(juego);
 		encontrarDireccionesPosibles(juego, movimiento.origen, direccionesPosibles, n);
 	} while (n == 0);
-	movimiento.dir = escogerDireccion(juego, direccionesPosibles, n);
-	aplicarMovimiento(juego, movimiento);
+	if (n > 1) {
+		movimiento.dir = escogerDireccion(juego, direccionesPosibles, n);
+		aplicarMovimiento(juego, movimiento);
+	}
+	else {
+		movimiento.dir = direccionesPosibles[0];
+		aplicarMovimiento(juego, movimiento);
+	}
 	chequearBloqueo(juego);
 }
 
@@ -43,6 +49,7 @@ Movimiento pedirMovimiento(const Juego juego) {
 		std::cout << "Escoja ficha: ";
 		std::cin >> movimiento;
 	} while (juego.tablero.celdas[movimiento.origen.fila][movimiento.origen.columna].tipo == NULA);
+	std::cout << "\n";
 
 	return movimiento;
 }
@@ -62,10 +69,10 @@ void encontrarDireccionesPosibles(const Juego juego, Posicion origen, Direccion 
 	int i = 0;
 
 	while (i < 4) {
-		bool arriba = origen.columna <= 2 && DIRECCIONES[i].nombre == "Arriba"; //verifico si salgo del limite si voy por arriba
-		bool abajo = origen.columna >= 3 && DIRECCIONES[i].nombre == "Abajo"; //verifico si salgo del limite si voy por abajo
-		bool izquierda = origen.fila <= 2 && DIRECCIONES[i].nombre == "Izquierda"; //verifico si salgo del limite si voy por la izquierda
-		bool derecha = origen.fila >= 3 && DIRECCIONES[i].nombre == "Derecha"; //verifico si salgo del limite si voy por la derecha
+		bool arriba = origen.fila <= 1 && DIRECCIONES[i].nombre == "Arriba"; //verifico si salgo del limite si voy por arriba
+		bool abajo = origen.fila >= juego.tablero.filas-3 && DIRECCIONES[i].nombre == "Abajo"; //verifico si salgo del limite si voy por abajo
+		bool izquierda = origen.columna <= 1 && DIRECCIONES[i].nombre == "Izquierda"; //verifico si salgo del limite si voy por la izquierda
+		bool derecha = origen.columna >= juego.tablero.columnas-3 && DIRECCIONES[i].nombre == "Derecha"; //verifico si salgo del limite si voy por la derecha
 		if (!derecha && !izquierda && !arriba && !abajo) { //si todos son falsos significa que no salgo del limite
 			Posicion celdaFicha = origen + DIRECCIONES[i];
 			if (hayFicha(juego.tablero, celdaFicha)) {
@@ -97,7 +104,7 @@ Direccion escogerDireccion(const Juego juego, const Direccion direccionesPosible
 }
 
 void chequearGanador(Juego& juego, const Posicion pos) {
-	if (contarFichas(juego.tablero) && esMeta(juego.tablero, pos) && hayVacia(juego.tablero, pos)) {
+	if (contarFichas(juego.tablero) == 1 && esMeta(juego.tablero, pos) && hayVacia(juego.tablero, pos)) {
 		juego.ganado = true;
 	}
 }
@@ -107,6 +114,7 @@ void chequearBloqueo(Juego& juego) {
 	int fichasMover = 0;
 	int i = 0, j = 0;
 	while (i < juego.tablero.filas && fichasMover < 1) {
+		j = 0;
 		while (j < juego.tablero.columnas && fichasMover < 1) {
 			if (hayFicha(juego.tablero, { i,j }))
 				encontrarDireccionesPosibles(juego, { i,j }, direccionesDisponibles, fichasMover);
