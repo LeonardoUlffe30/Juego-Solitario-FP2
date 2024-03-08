@@ -15,10 +15,6 @@ std::istream& operator>> (std::istream& in, Tablero& tablero) {
 	return in;
 }
 
-//struct Tablero {
-//	Celda celdas[MAXDIM][MAXDIM];
-//	int filas, columnas;
-//};
 void mostrar(const Tablero tablero) {
 	std::cout << "   ";
 	for (int i = 0; i < tablero.columnas; ++i) {

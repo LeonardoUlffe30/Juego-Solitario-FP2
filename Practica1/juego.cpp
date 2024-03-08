@@ -70,9 +70,9 @@ void encontrarDireccionesPosibles(const Juego juego, Posicion origen, Direccion 
 
 	while (i < 4) {
 		bool arriba = origen.fila <= 1 && DIRECCIONES[i].nombre == "Arriba"; //verifico si salgo del limite si voy por arriba
-		bool abajo = origen.fila >= juego.tablero.filas-3 && DIRECCIONES[i].nombre == "Abajo"; //verifico si salgo del limite si voy por abajo
+		bool abajo = origen.fila >= juego.tablero.filas-2 && DIRECCIONES[i].nombre == "Abajo"; //verifico si salgo del limite si voy por abajo
 		bool izquierda = origen.columna <= 1 && DIRECCIONES[i].nombre == "Izquierda"; //verifico si salgo del limite si voy por la izquierda
-		bool derecha = origen.columna >= juego.tablero.columnas-3 && DIRECCIONES[i].nombre == "Derecha"; //verifico si salgo del limite si voy por la derecha
+		bool derecha = origen.columna >= juego.tablero.columnas-2 && DIRECCIONES[i].nombre == "Derecha"; //verifico si salgo del limite si voy por la derecha
 		if (!derecha && !izquierda && !arriba && !abajo) { //si todos son falsos significa que no salgo del limite
 			Posicion celdaFicha = origen + DIRECCIONES[i];
 			if (hayFicha(juego.tablero, celdaFicha)) {
@@ -100,7 +100,7 @@ Direccion escogerDireccion(const Juego juego, const Direccion direccionesPosible
 	}
 	int seleccion;
 	std::cin >> seleccion;
-	return direccionesPosibles[seleccion];
+	return direccionesPosibles[seleccion-1];
 }
 
 void chequearGanador(Juego& juego, const Posicion pos) {
