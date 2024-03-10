@@ -40,6 +40,11 @@ bool hayVacia(const Tablero tablero, const Posicion pos) {
 	else return false;
 }
 
+bool esNula(const Tablero tablero, const Posicion pos) {
+	if (tablero.celdas[pos.fila][pos.columna].tipo == NULA) return true;
+	else return false;
+}
+
 bool esMeta(const Tablero tablero, const Posicion pos) {
 	if (tablero.celdas[pos.fila][pos.columna].meta) return true;
 	else return false;

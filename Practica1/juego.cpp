@@ -1,5 +1,6 @@
 #include "iJuego.h"
 #include "iColores.h"
+#include <random>
 
 bool juegoFinalizado(const Juego juego) {
 	if (juego.bloqueado || juego.ganado)
@@ -36,9 +37,8 @@ void siguienteTurno(Juego& juego) {
 }
 
 std::string motivoFinPartida(const Juego juego) {
-	if (juego.bloqueado)
-		return "Has perdido. Es imposible realizar algun movimiento\n";
-	return "Has ganado.\n";
+	if (juego.ganado) return "Has ganado.\n";
+	else return "Has perdido. Es imposible realizar algun movimiento\n";
 }
 
 
@@ -61,8 +61,7 @@ void aplicarMovimiento(Juego& juego, const Movimiento mov) {
 	quitarFicha(juego.tablero, posOrigen);
 	quitarFicha(juego.tablero, posQuitar);
 	ponerFicha(juego.tablero, posOcupar);
-	chequearGanador(juego, posOrigen);
-	chequearGanador(juego, posQuitar);
+	chequearGanador(juego, posOcupar);
 }
 
 void encontrarDireccionesPosibles(const Juego juego, Posicion origen, Direccion direccionesPosibles[4], int& n) {
@@ -104,7 +103,7 @@ Direccion escogerDireccion(const Juego juego, const Direccion direccionesPosible
 }
 
 void chequearGanador(Juego& juego, const Posicion pos) {
-	if (contarFichas(juego.tablero) == 1 && esMeta(juego.tablero, pos) && hayVacia(juego.tablero, pos)) {
+	if (contarFichas(juego.tablero) == 1 && esMeta(juego.tablero, pos) && hayFicha(juego.tablero, pos)) {
 		juego.ganado = true;
 	}
 }
@@ -140,4 +139,63 @@ bool quiereVolverAJugar() {
 				return false;
 		}
 	} while (opcion != 'S' && opcion != 'N');
+}
+
+void encontrarDireccionesPosiblesAleatorio(const Juego juego, Posicion origen, Direccion direccionesPosibles[4], int& n) {
+	int i = 0;
+
+	while (i < 4) {
+		bool arriba = origen.fila <= 1 && DIRECCIONES[i].nombre == "Arriba"; //verifico si salgo del limite si voy por arriba
+		bool abajo = origen.fila >= juego.tablero.filas - 2 && DIRECCIONES[i].nombre == "Abajo"; //verifico si salgo del limite si voy por abajo
+		bool izquierda = origen.columna <= 1 && DIRECCIONES[i].nombre == "Izquierda"; //verifico si salgo del limite si voy por la izquierda
+		bool derecha = origen.columna >= juego.tablero.columnas - 2 && DIRECCIONES[i].nombre == "Derecha"; //verifico si salgo del limite si voy por la derecha
+		if (!derecha && !izquierda && !arriba && !abajo) { //si todos son falsos significa que no salgo del limite
+			Posicion celdaAnterior1 = origen + DIRECCIONES[i];
+			if (hayVacia(juego.tablero, celdaAnterior1) || esNula(juego.tablero, celdaAnterior1)) {
+				Posicion celdaAnterior2 = celdaAnterior1 + DIRECCIONES[i];
+				if (hayVacia(juego.tablero, celdaAnterior2) || esNula(juego.tablero, celdaAnterior2)) {
+					direccionesPosibles[n] = DIRECCIONES[i];
+					++n;
+				}
+			}
+		}
+		++i;
+	}
+}
+
+void aplicarMovimientoAleatorio(Juego& juego, const Movimiento mov) {
+	Posicion posOrigen = mov.origen;
+	Posicion posOcupar1 = mov.origen + mov.dir;
+	Posicion posOcupar2 = mov.origen + mov.dir + mov.dir;
+	quitarFicha(juego.tablero, posOrigen);
+	ponerFicha(juego.tablero, posOcupar1);
+	ponerFicha(juego.tablero, posOcupar2);
+}
+
+void genera(Juego& juego, int pasos) {
+	int n = 1;
+	juego.tablero = { NULA };
+	for (int i = 0; i < pasos && n != 0; ++i) {
+		Direccion direccionesPosibles[4];
+		n = 0;
+		Movimiento mov;
+		mov.origen = { rand() % (juego.tablero.filas - 1), rand() % (juego.tablero.columnas - 1) };
+		if (i == 0) {
+			juego.tablero.celdas[mov.origen.fila][mov.origen.columna].meta = true;
+			ponerFicha(juego.tablero, mov.origen);
+		}
+		else {
+			do {
+				mov.origen = { rand() % (juego.tablero.filas - 1), rand() % (juego.tablero.columnas - 1) };
+			} while (juego.tablero.celdas[mov.origen.fila][mov.origen.columna].tipo != FICHA);
+		}
+
+		encontrarDireccionesPosiblesAleatorio(juego, mov.origen, direccionesPosibles, n);
+		if (n != 0) {
+			mov.dir = direccionesPosibles[rand() % n];
+			aplicarMovimientoAleatorio(juego, mov);
+		}
+		
+	}
+
 }

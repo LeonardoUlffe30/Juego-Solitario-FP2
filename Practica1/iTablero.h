@@ -14,6 +14,7 @@ std::istream& operator>> (std::istream& in, Tablero& tablero);
 void mostrar(const Tablero tablero);
 bool hayFicha(const Tablero tablero, const Posicion pos);
 bool hayVacia(const Tablero tablero, const Posicion pos);
+bool esNula(const Tablero tablero, const Posicion pos);
 bool esMeta(const Tablero tablero, const Posicion pos);
 int contarFichas(const Tablero tablero);
 void quitarFicha(Tablero& tablero, const Posicion pos);
