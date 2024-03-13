@@ -173,29 +173,32 @@ void aplicarMovimientoAleatorio(Juego& juego, const Movimiento mov) {
 }
 
 void genera(Juego& juego, int pasos) {
-	int n = 1;
-	juego.tablero = { NULA };
-	for (int i = 0; i < pasos && n != 0; ++i) {
+	int n = -1, nFichas = -1;
+	juego.tablero = { {NULA, false}, 7, 7 };
+	for (int i = 0; i < pasos && n != 0 && nFichas != 0; ++i) {
 		Direccion direccionesPosibles[4];
-		n = 0;
 		Movimiento mov;
-		mov.origen = { rand() % (juego.tablero.filas - 1), rand() % (juego.tablero.columnas - 1) };
+		n = 0;  
 		if (i == 0) {
+			mov.origen = { rand() % (juego.tablero.filas), rand() % (juego.tablero.columnas) };
 			juego.tablero.celdas[mov.origen.fila][mov.origen.columna].meta = true;
 			ponerFicha(juego.tablero, mov.origen);
+
 		}
 		else {
-			do {
-				mov.origen = { rand() % (juego.tablero.filas - 1), rand() % (juego.tablero.columnas - 1) };
-			} while (juego.tablero.celdas[mov.origen.fila][mov.origen.columna].tipo != FICHA);
-		}
+			nFichas = 0;
+			Posicion* posFichas = new Posicion[juego.tablero.filas * juego.tablero.columnas];
 
-		encontrarDireccionesPosiblesAleatorio(juego, mov.origen, direccionesPosibles, n);
-		if (n != 0) {
-			mov.dir = direccionesPosibles[rand() % n];
-			aplicarMovimientoAleatorio(juego, mov);
+			encontrarFichas(juego.tablero, posFichas, nFichas);
+			mov.origen = posFichas[rand() % nFichas];
 		}
-		
+		if (nFichas != 0) {
+			encontrarDireccionesPosiblesAleatorio(juego, mov.origen, direccionesPosibles, n);
+			if (n != 0) {
+				mov.dir = direccionesPosibles[rand() % n];
+				aplicarMovimientoAleatorio(juego, mov);
+			}
+		}
 	}
 
 }

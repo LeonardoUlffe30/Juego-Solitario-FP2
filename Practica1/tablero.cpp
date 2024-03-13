@@ -67,3 +67,15 @@ void quitarFicha(Tablero& tablero, const Posicion pos) {
 void ponerFicha(Tablero& tablero, const Posicion pos) {
 	tablero.celdas[pos.fila][pos.columna].tipo = FICHA;
 }
+
+void encontrarFichas(const Tablero tablero, Posicion posFichas[], int& nFichas) {
+	for (int i = 0; i < tablero.filas; ++i) {
+		for (int j = 0; j < tablero.columnas; ++j) {
+			if (tablero.celdas[i][j].tipo == FICHA) {
+				posFichas[nFichas].fila = i;
+				posFichas[nFichas].columna = j;
+				++nFichas;
+			}
+		}
+	}
+}

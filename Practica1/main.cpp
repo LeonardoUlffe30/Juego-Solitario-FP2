@@ -2,7 +2,7 @@
 #include <fstream>
 #include "iJuego.h"
 #include "iColores.h"
-#include <random>
+#include <time.h>
 
 using namespace std;
 
@@ -13,10 +13,10 @@ int main() {
 		cout << "--- Comienza el SOLITARIO --- " << endl;
 		// leer tablero
 		Juego juego;
-		/*ifstream fichero;
-		fichero.open("tablero.txt");
-		fichero >> juego;
-		fichero.close();*/
+		//ifstream fichero;
+		//fichero.open("tablero.txt");
+		//fichero >> juego;
+		//fichero.close();
 		genera(juego, 5);
 
 		while (!juegoFinalizado(juego)) { // partida no finalizado

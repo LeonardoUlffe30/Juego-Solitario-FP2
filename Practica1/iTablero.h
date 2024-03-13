@@ -19,5 +19,6 @@ bool esMeta(const Tablero tablero, const Posicion pos);
 int contarFichas(const Tablero tablero);
 void quitarFicha(Tablero& tablero, const Posicion pos);
 void ponerFicha(Tablero& tablero, const Posicion pos);
+void encontrarFichas(const Tablero tablero, Posicion posFichas[], int& nFichas);
 
 #endif
