@@ -27,6 +27,7 @@ int main() {
 		mostrar(juego);
 		cout << motivoFinPartida(juego) << endl;
 		seguirJugando = quiereVolverAJugar();
+		system("cls");
 	}
 
 	system("pause");

@@ -37,7 +37,9 @@ void siguienteTurno(Juego& juego) {
 }
 
 std::string motivoFinPartida(const Juego juego) {
-	if (juego.ganado) return "Has ganado.\n";
+	if (juego.ganado) {
+		return "¡¡¡ HAS GANADO !!!.\n";
+	}
 	else return "Has perdido. Es imposible realizar algun movimiento\n";
 }
 
@@ -48,7 +50,9 @@ Movimiento pedirMovimiento(const Juego juego) {
 	do {
 		std::cout << "Escoja ficha: ";
 		std::cin >> movimiento;
-	} while (juego.tablero.celdas[movimiento.origen.fila][movimiento.origen.columna].tipo == NULA);
+	} while (juego.tablero.celdas[movimiento.origen.fila][movimiento.origen.columna].tipo == NULA ||
+		movimiento.origen.fila >= juego.tablero.filas || movimiento.origen.fila < 0 ||
+		movimiento.origen.columna >= juego.tablero.columnas || movimiento.origen.columna < 0);
 	std::cout << "\n";
 
 	return movimiento;
