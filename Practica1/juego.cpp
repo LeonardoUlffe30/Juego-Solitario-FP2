@@ -43,7 +43,6 @@ std::string motivoFinPartida(const Juego juego) {
 	else return "Has perdido. Es imposible realizar algun movimiento\n";
 }
 
-
 //Funciones auxiliares para implementar las anteriores
 Movimiento pedirMovimiento(const Juego juego) {
 	Movimiento movimiento;
@@ -135,11 +134,11 @@ bool quiereVolverAJugar() {
 	do {
 		std::cout << "Nueva partida (S/N): ";
 		std::cin >> opcion;
-		if (opcion == 'S') {
+		if (opcion == 'SI') {
 			return true;
 		}
 		else {
-			if (opcion == 'N')
+			if (opcion == 'NO')
 				return false;
 		}
 	} while (opcion != 'S' && opcion != 'N');
@@ -187,7 +186,6 @@ void genera(Juego& juego, int pasos) {
 			mov.origen = { rand() % (juego.tablero.filas), rand() % (juego.tablero.columnas) };
 			juego.tablero.celdas[mov.origen.fila][mov.origen.columna].meta = true;
 			ponerFicha(juego.tablero, mov.origen);
-
 		}
 		else {
 			nFichas = 0;
@@ -196,6 +194,8 @@ void genera(Juego& juego, int pasos) {
 			encontrarFichas(juego.tablero, posFichas, nFichas);
 			mov.origen = posFichas[rand() % nFichas];
 		}
+		std::cout << "Paso " << i+1 << "\n";
+		mostrar(juego);
 		if (nFichas != 0) {
 			encontrarDireccionesPosiblesAleatorio(juego, mov.origen, direccionesPosibles, n);
 			if (n != 0) {

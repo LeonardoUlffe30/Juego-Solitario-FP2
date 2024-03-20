@@ -6,18 +6,37 @@
 
 using namespace std;
 
+void menu(Juego& juego) {
+	char respuesta;
+	do {
+		std::cout << "Deseas generar el tablero aleatoriamente? (S/N): ";
+		std::cin >> respuesta;
+		if (respuesta == 'N') {
+			ifstream fichero;
+			fichero.open("tablero.txt");
+			fichero >> juego;
+			fichero.close();
+		}
+		if (respuesta == 'S') {
+			int pasos = 0;
+			do {
+				std::cout << "Ingrese el numero de pasos para generar el tablero (mayor a 0): ";
+				cin >> pasos;
+			} while (pasos <= 0);
+			std::cout << "\n";
+			genera(juego, pasos);
+		}
+	} while (respuesta != 'S' && respuesta != 'N');
+}
+
 int main() {
 	srand(time(NULL));
 	bool seguirJugando = true;
 	while (seguirJugando) { // quiere seguir jugando
-		cout << "--- Comienza el SOLITARIO --- " << endl;
 		// leer tablero
 		Juego juego;
-		//ifstream fichero;
-		//fichero.open("tablero.txt");
-		//fichero >> juego;
-		//fichero.close();
-		genera(juego, 5);
+		menu(juego);
+		cout << "\n--- Comienza el SOLITARIO ---\n";
 
 		while (!juegoFinalizado(juego)) { // partida no finalizado
 			mostrar(juego);
