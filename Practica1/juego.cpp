@@ -134,11 +134,11 @@ bool quiereVolverAJugar() {
 	do {
 		std::cout << "Nueva partida (S/N): ";
 		std::cin >> opcion;
-		if (opcion == 'SI') {
+		if (opcion == 'S') {
 			return true;
 		}
 		else {
-			if (opcion == 'NO')
+			if (opcion == 'N')
 				return false;
 		}
 	} while (opcion != 'S' && opcion != 'N');
