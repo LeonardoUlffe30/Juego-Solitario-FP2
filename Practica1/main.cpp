@@ -6,6 +6,25 @@
 
 using namespace std;
 
+void establecerPasos(int& pasos) {
+	do {
+		std::cout << "Ingrese el numero de pasos para generar el tablero (mayor a 0): ";
+		cin >> pasos;
+	} while (pasos <= 0);
+}
+
+void establecerDimension(int& dimension) {
+	char respuesta = 0;
+	do {
+		std::cout << "Deseas establecer alguna dimension? (S/N): ";
+		std::cin >> respuesta;
+		if (respuesta == 'S') {
+			std::cout << "Ingresa la dimension (Max 10x10): ";
+			std::cin >> dimension;
+		}
+	} while (respuesta != 'S' && respuesta != 'N');
+}
+
 void menu(Juego& juego) {
 	char respuesta;
 	do {
@@ -18,13 +37,10 @@ void menu(Juego& juego) {
 			fichero.close();
 		}
 		if (respuesta == 'S') {
-			int pasos = 0;
-			do {
-				std::cout << "Ingrese el numero de pasos para generar el tablero (mayor a 0): ";
-				cin >> pasos;
-			} while (pasos <= 0);
-			std::cout << "\n";
-			genera(juego, pasos);
+			int pasos = 0, dimension = 6;
+			establecerDimension(dimension);
+			establecerPasos(pasos);			
+			genera(juego, pasos, dimension);
 		}
 	} while (respuesta != 'S' && respuesta != 'N');
 }

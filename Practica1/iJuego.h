@@ -23,6 +23,6 @@ Direccion escogerDireccion(const Juego juego,
 void chequearGanador(Juego& juego, const Posicion pos);
 void chequearBloqueo(Juego& juego);
 bool quiereVolverAJugar();
-void genera(Juego& juego, int pasos);
+void genera(Juego& juego, int pasos, int dimension);
 
 #endif

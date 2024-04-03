@@ -135,7 +135,7 @@ bool quiereVolverAJugar() {
 		std::cout << "Nueva partida (S/N): ";
 		std::cin >> opcion;
 		if (opcion == 'S') {
-			return true;
+			return true; 
 		}
 		else {
 			if (opcion == 'N')
@@ -175,9 +175,9 @@ void aplicarMovimientoAleatorio(Juego& juego, const Movimiento mov) {
 	ponerFicha(juego.tablero, posOcupar2);
 }
 
-void genera(Juego& juego, int pasos) {
+void genera(Juego& juego, int pasos, int dimension) {
 	int n = -1, nFichas = -1;
-	juego.tablero = { {NULA, false}, 7, 7 };
+	juego.tablero = { {NULA, false}, dimension, dimension };
 	for (int i = 0; i < pasos && n != 0 && nFichas != 0; ++i) {
 		Direccion direccionesPosibles[4];
 		Movimiento mov;
