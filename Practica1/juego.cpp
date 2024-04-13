@@ -2,6 +2,35 @@
 #include "iColores.h"
 #include <random>
 
+//const int MAX_PARTIDAS = 10;
+//struct ListaJuegos {
+//	Juego* datos[MAX_PARTIDAS];
+//	int cont = 0;
+//};
+
+void inicializar(ListaJuegos& l) {
+	l.cont = 0;
+}
+
+void insertar(ListaJuegos& l, Juego* j) {
+	l.datos[l.cont + 1] = j;
+}
+
+void borrar(ListaJuegos& l, Juego* j) {
+	for (int i = 0; i < l.cont; i++) {
+		if (l.datos[i] == j) {
+			delete l.datos[i];
+		}
+	}
+}
+
+void liberar(ListaJuegos& l) {
+	for (int i = 0; i < l.cont; i++) {
+		delete l.datos[i];
+	}
+	//delete[] l.datos;
+}
+
 bool juegoFinalizado(const Juego juego) {
 	if (juego.bloqueado || juego.ganado)
 		return true;
@@ -17,12 +46,14 @@ void mostrar(const Juego j) {
 	mostrar(j.tablero);
 }
 
-void siguienteTurno(Juego& juego) {
+bool siguienteTurno(Juego& juego) {
 	int n = 0;
 	Movimiento movimiento; 
 	Direccion direccionesPosibles[4];
+	bool continuar = false;
 	do {
-		movimiento = pedirMovimiento(juego);
+		continuar = pedirMovimiento(juego, movimiento);
+		if (!continuar) return continuar;
 		encontrarDireccionesPosibles(juego, movimiento.origen, direccionesPosibles, n);
 	} while (n == 0);
 	if (n > 1) {
@@ -34,6 +65,7 @@ void siguienteTurno(Juego& juego) {
 		aplicarMovimiento(juego, movimiento);
 	}
 	chequearBloqueo(juego);
+	return continuar;
 }
 
 std::string motivoFinPartida(const Juego juego) {
@@ -44,17 +76,19 @@ std::string motivoFinPartida(const Juego juego) {
 }
 
 //Funciones auxiliares para implementar las anteriores
-Movimiento pedirMovimiento(const Juego juego) {
-	Movimiento movimiento;
+bool pedirMovimiento(const Juego juego, Movimiento& movimiento) {
 	do {
-		std::cout << "Escoja ficha: ";
-		std::cin >> movimiento;
+		std::cout << "Escoja ficha (0 para salir): ";
+		std::cin >> movimiento.origen.fila;
+		if (movimiento.origen.fila == 0) {
+			return false;
+		}
+		else std::cin >> movimiento.origen.columna;
 	} while (juego.tablero.celdas[movimiento.origen.fila][movimiento.origen.columna].tipo == NULA ||
 		movimiento.origen.fila >= juego.tablero.filas || movimiento.origen.fila < 0 ||
 		movimiento.origen.columna >= juego.tablero.columnas || movimiento.origen.columna < 0);
 	std::cout << "\n";
-
-	return movimiento;
+	return true;
 }
 
 void aplicarMovimiento(Juego& juego, const Movimiento mov) {

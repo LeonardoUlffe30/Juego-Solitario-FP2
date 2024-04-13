@@ -30,6 +30,9 @@
     <ClCompile Include="tablero.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="jugador.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="iCelda.h">
@@ -47,9 +50,18 @@
     <ClInclude Include="iColores.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="memoryleaks.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="iJugador.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="tablero.txt">
+      <Filter>Archivos de origen</Filter>
+    </Text>
+    <Text Include="partidas.txt">
       <Filter>Archivos de origen</Filter>
     </Text>
   </ItemGroup>

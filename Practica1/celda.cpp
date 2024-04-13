@@ -12,6 +12,22 @@ std::istream& operator>>(std::istream& in, Celda& c) {
 	return in;
 }
 
+std::ostream& operator<<(std::ostream& out, Celda& c) {
+	switch (c.tipo)
+	{
+	case NULA:
+		out << 0;
+		break;
+	case VACIA:
+		out << 1;
+		break;
+	default:
+		out << 2;
+		break;
+	}
+	return out;
+}
+
 void mostrar(const Celda c) {
 	switch (c.tipo) {
 	case NULA:

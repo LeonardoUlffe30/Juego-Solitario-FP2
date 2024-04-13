@@ -15,6 +15,24 @@ std::istream& operator>> (std::istream& in, Tablero& tablero) {
 	return in;
 }
 
+std::ostream& operator<< (std::ostream& out, Tablero& tablero) {
+	int filaMeta = 0, colMeta = 0;
+	out << tablero.filas << " " << tablero.columnas << "\n";
+
+	for (int i = 0; i < tablero.filas; ++i) {
+		for (int j = 0; j < tablero.columnas; ++j) {
+			out << tablero.celdas[i][j] << " ";
+			if (tablero.celdas[i][j].meta) {
+				filaMeta = i; colMeta = j;
+			}
+		}
+		out << "\n";
+	}
+	out << filaMeta << " " << colMeta;
+	tablero.celdas[filaMeta][colMeta].meta = true;
+	return out;
+}
+
 void mostrar(const Tablero tablero) {
 	std::cout << "   ";
 	for (int i = 0; i < tablero.columnas; ++i) {

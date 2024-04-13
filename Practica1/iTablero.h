@@ -11,6 +11,7 @@ struct Tablero {
 };
 
 std::istream& operator>> (std::istream& in, Tablero& tablero);
+std::ostream& operator<< (std::ostream& out, Tablero& tablero);
 void mostrar(const Tablero tablero);
 bool hayFicha(const Tablero tablero, const Posicion pos);
 bool hayVacia(const Tablero tablero, const Posicion pos);

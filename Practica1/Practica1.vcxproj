@@ -114,6 +114,7 @@
   <ItemGroup>
     <ClCompile Include="celda.cpp" />
     <ClCompile Include="juego.cpp" />
+    <ClCompile Include="jugador.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="movimiento.cpp" />
     <ClCompile Include="tablero.cpp" />
@@ -122,10 +123,13 @@
     <ClInclude Include="iCelda.h" />
     <ClInclude Include="iColores.h" />
     <ClInclude Include="iJuego.h" />
+    <ClInclude Include="iJugador.h" />
     <ClInclude Include="iMovimiento.h" />
     <ClInclude Include="iTablero.h" />
+    <ClInclude Include="memoryleaks.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="partidas.txt" />
     <Text Include="tablero.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
