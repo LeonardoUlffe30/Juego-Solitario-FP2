@@ -50,8 +50,8 @@ bool comenzarSolitario(Juego& juego) {
 	bool seguirJugando = true;
 	while (seguirJugando) { // quiere seguir jugando
 		// leer tablero
-		Juego juego;
-		menu(juego);
+		//Juego juego;
+		//menu(juego);
 		cout << "\n--- Comienza el SOLITARIO ---\n";
 		mostrar(juego);
 		while (!juegoFinalizado(juego)) { // partida no finalizado
@@ -63,9 +63,11 @@ bool comenzarSolitario(Juego& juego) {
 		//mostrar(juego);
 		cout << motivoFinPartida(juego) << endl;
 		seguirJugando = quiereVolverAJugar();
+		
+		if (seguirJugando) menu(juego);
 		system("cls");
 	}
-	return true;
+	return false;
 }
 
 void buscarPartida(ListaJugadores listaJugadores, std::string nombre, bool& continuar) {
@@ -76,18 +78,23 @@ void buscarPartida(ListaJugadores listaJugadores, std::string nombre, bool& cont
 		std::cout << "No tienes partidas. Vamos a crear un juego aleatorio\n";
 	}
 	else {
-		if (jugador->partidas.cont == 0) std::cout << "No tienes partidas. Vamos a crear un juego aleatorio\n";
+		if (jugador->partidas.cont == 0) {
+			std::cout << "No tienes partidas. Vamos a crear un juego aleatorio\n";
+			Juego juego;
+			menu(juego);
+			comenzarSolitario(juego);
+		}
 		else {
 			int numPartida = 0;
 			for (int i = 0; i < jugador->partidas.cont; i++) {
-				std::cout << i << " --------------------------\n";
+				std::cout << i+1 << " --------------------------\n";
 				mostrar(*jugador->partidas.datos[i]);
 				std::cout << "\n";
 			}
 			std::cout << "Elige una partida o 0 para crear una nueva aleatoria: ";
 			std::cin >> numPartida;
 			if (numPartida != 0) {
-				continuar = comenzarSolitario(*jugador->partidas.datos[numPartida]);
+				continuar = comenzarSolitario(*jugador->partidas.datos[numPartida-1]);
 			}
 		}
 	}

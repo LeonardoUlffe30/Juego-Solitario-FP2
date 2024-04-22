@@ -4,19 +4,20 @@ void inicializar(Jugador& j, std::string nombre) {
 	j.nombre = nombre;
 }
 
-void inicializar(ListaJugadores& lista, int tam) {
+void inicializar(ListaJugadores& lista, int tam) { // lista es un puntero a un puntero de Juego
 	lista.datos = new Jugador*[tam];
-	lista.tam = tam;
+	lista.tam = tam;;
+	for (int i = 0; i < tam; ++i) {
+		lista.datos[i] = new Jugador();
+	}
 }
 
 std::istream& operator>>(std::istream& in, Jugador& j) { 
 	in >> j.nombre; //Lee el nombre
 	in >> j.partidas.cont; //Lee el numero de partidas
+	inicializar(j.partidas);
 	for (int i = 0; i < j.partidas.cont; i++) { //Guarda los tableros
-		Juego* juego = NULL;
-		in >> juego->tablero;
-		j.partidas.datos[1] = juego;
-		++i;
+		in >> (j.partidas.datos[i]->tablero);
 	}
 	return in;
 }

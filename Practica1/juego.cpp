@@ -9,7 +9,9 @@
 //};
 
 void inicializar(ListaJuegos& l) {
-	l.cont = 0;
+	for (int i = 0; i < l.cont; ++i) {
+		l.datos[i] = new Juego();
+	}
 }
 
 void insertar(ListaJuegos& l, Juego* j) {
@@ -84,6 +86,8 @@ bool pedirMovimiento(const Juego juego, Movimiento& movimiento) {
 			return false;
 		}
 		else std::cin >> movimiento.origen.columna;
+		movimiento.origen.fila--;
+		movimiento.origen.columna--;
 	} while (juego.tablero.celdas[movimiento.origen.fila][movimiento.origen.columna].tipo == NULA ||
 		movimiento.origen.fila >= juego.tablero.filas || movimiento.origen.fila < 0 ||
 		movimiento.origen.columna >= juego.tablero.columnas || movimiento.origen.columna < 0);
