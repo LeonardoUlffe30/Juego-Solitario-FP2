@@ -1,28 +1,39 @@
 #include "iJuego.h"
 #include "iColores.h"
 #include <random>
-
-//const int MAX_PARTIDAS = 10;
-//struct ListaJuegos {
-//	Juego* datos[MAX_PARTIDAS];
-//	int cont = 0;
-//};
+#include "memoryleaks.h"
 
 void inicializar(ListaJuegos& l) {
-	for (int i = 0; i < l.cont; ++i) {
+	for (int i = 0; i < MAX_PARTIDAS; ++i) {
 		l.datos[i] = new Juego();
 	}
 }
 
 void insertar(ListaJuegos& l, Juego* j) {
-	l.datos[l.cont + 1] = j;
+	l.datos[l.cont] = j;
+	l.cont++;
 }
 
 void borrar(ListaJuegos& l, Juego* j) {
+	//Borrando partida
+	int indice = 0;
 	for (int i = 0; i < l.cont; i++) {
 		if (l.datos[i] == j) {
+			indice = i;
 			delete l.datos[i];
 		}
+	}
+
+	//Reordenando partidas
+	if (indice == l.cont - 1) {
+		l.cont--;
+	}
+	else {
+		for (int i = indice; i < l.cont; i++) {
+			l.datos[i] = l.datos[i+1];
+			l.datos[i+1] = NULL;
+		}
+		l.cont--;
 	}
 }
 
@@ -30,12 +41,12 @@ void liberar(ListaJuegos& l) {
 	for (int i = 0; i < l.cont; i++) {
 		delete l.datos[i];
 	}
-	//delete[] l.datos;
 }
 
 bool juegoFinalizado(const Juego juego) {
-	if (juego.bloqueado || juego.ganado)
+	if (juego.bloqueado || juego.ganado) {
 		return true;
+	}
 	return false;
 }
 
@@ -170,7 +181,7 @@ void chequearBloqueo(Juego& juego) {
 bool quiereVolverAJugar() {
 	char opcion;
 	do {
-		std::cout << "Nueva partida (S/N): ";
+		std::cout << "\nNueva partida (S/N): ";
 		std::cin >> opcion;
 		if (opcion == 'S') {
 			return true; 
@@ -213,8 +224,8 @@ void aplicarMovimientoAleatorio(Juego& juego, const Movimiento mov) {
 	ponerFicha(juego.tablero, posOcupar2);
 }
 
-void genera(Juego& juego, int pasos, int dimension) {
-	int n = -1, nFichas = -1;
+void genera(Juego& juego, int pasos) {
+	int n = -1, nFichas = -1, dimension = 4 + rand() % (10 - 4 + 1); // [1;10]
 	juego.tablero = { {NULA, false}, dimension, dimension };
 	for (int i = 0; i < pasos && n != 0 && nFichas != 0; ++i) {
 		Direccion direccionesPosibles[4];

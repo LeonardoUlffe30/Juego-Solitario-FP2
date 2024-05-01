@@ -28,7 +28,7 @@ std::ostream& operator<< (std::ostream& out, Tablero& tablero) {
 		}
 		out << "\n";
 	}
-	out << filaMeta << " " << colMeta;
+	out << filaMeta << " " << colMeta << "\n";
 	tablero.celdas[filaMeta][colMeta].meta = true;
 	return out;
 }

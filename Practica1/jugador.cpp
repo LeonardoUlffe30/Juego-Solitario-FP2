@@ -1,7 +1,9 @@
 #include "iJugador.h"
+#include "memoryleaks.h"
 
 void inicializar(Jugador& j, std::string nombre) {
 	j.nombre = nombre;
+	inicializar(j.partidas);
 }
 
 void inicializar(ListaJugadores& lista, int tam) { // lista es un puntero a un puntero de Juego
@@ -25,14 +27,11 @@ std::istream& operator>>(std::istream& in, Jugador& j) {
 //Jugador 
 //   string nombres;
 //	 ListaJuegos partidas;
-std::ostream& operator<<(std::ostream& out, Jugador& j) {
-	out << j.nombre; //Lee el nombre
-	out << j.partidas.cont; //Lee el numero de partidas
-	for (int i = 0; i < j.partidas.cont; i++) { //Guarda los tableros
-		Juego* juego;
-		out << juego->tablero;
-		j.partidas.datos[i] = juego;
-		++i;
+std::ostream& operator<<(std::ostream& out, Jugador& jugador) {
+	out << jugador.nombre << "\n"; //Lee el nombre
+	out << jugador.partidas.cont << "\n"; //Lee el numero de partidas
+	for (int i = 0; i < jugador.partidas.cont; i++) { //Guarda los tableros
+		out << jugador.partidas.datos[i]->tablero;;
 	}
 	return out;
 }
@@ -54,17 +53,26 @@ Jugador* buscar(ListaJugadores lista, std::string nombre) {
 * necesitar ser ampliada.
 */
 void insertar(ListaJugadores& lista, Jugador* j) {
-	if (lista.cont < lista.tam) {
-		lista.datos[lista.cont + 1] = j;
+	if (lista.cont < lista.tam) { //4 elementos [0-3], cont 4, tam 4
+		lista.datos[lista.cont] = j;
 		lista.cont++;
 	}
 	else {
 		ListaJugadores nuevaLista;
-		inicializar(nuevaLista, lista.tam*2);
-		for (int i = 0; i < lista.cont; ++i) {
-			nuevaLista.datos[i] = lista.datos[i];
-			nuevaLista.cont++;
+		inicializar(nuevaLista, lista.tam * 2);
+		nuevaLista.cont = lista.cont;
+		for (int i = 0; i < lista.cont; ++i) { // pasos los jugadores a la nueva lista
+			inicializar(nuevaLista.datos[i]->partidas);
+			nuevaLista.datos[i]->nombre = lista.datos[i]->nombre;
+			nuevaLista.datos[i]->partidas.cont = lista.datos[i]->partidas.cont;
+			for (int j = 0; j < lista.datos[i]->partidas.cont; j++) {
+				nuevaLista.datos[i]->partidas.datos[j]->tablero = lista.datos[i]->partidas.datos[j]->tablero;
+				nuevaLista.datos[i]->partidas.datos[j]->ganado = lista.datos[i]->partidas.datos[j]->ganado;
+				nuevaLista.datos[i]->partidas.datos[j]->bloqueado = lista.datos[i]->partidas.datos[j]->bloqueado;
+			}
 		}
+		 //3 elementos [0,2], cont = 3
+
 		liberar(lista);
 		lista = nuevaLista;
 	}
@@ -79,18 +87,27 @@ lista. Además de eliminar al jugador de la lista, esta función se
 encargará de liberar cualquier memoria dinámica utilizada por este.
 */
 void eliminar(ListaJugadores& lista, Jugador* j) {
-	delete j;
+	liberar(j->partidas); //liberar los punteros a las partidas (de tipo Juego)
+	delete j; // elimino el puntero al jugador
 	lista.cont--;
 	if (lista.cont < 5) {
 		int tamDisminuido = lista.cont + 2;
 		ListaJugadores nuevaLista;
 		inicializar(nuevaLista, tamDisminuido);
-		for (int i = 0; i < lista.cont; ++i) {
-			nuevaLista.datos[i] = lista.datos[i];
-			nuevaLista.cont++;
+		for (int i = 0; i < lista.cont; ++i) { // pasos los jugadores a la nueva lista
+			inicializar(nuevaLista.datos[i]->partidas);
+			nuevaLista.datos[i]->nombre = lista.datos[i]->nombre;
+			nuevaLista.datos[i]->partidas.cont = lista.datos[i]->partidas.cont;
+			for (int j = 0; j < lista.datos[i]->partidas.cont; j++) {
+				nuevaLista.datos[i]->partidas.datos[j]->tablero = lista.datos[i]->partidas.datos[j]->tablero;
+				nuevaLista.datos[i]->partidas.datos[j]->ganado = lista.datos[i]->partidas.datos[j]->ganado;
+				nuevaLista.datos[i]->partidas.datos[j]->bloqueado = lista.datos[i]->partidas.datos[j]->bloqueado;
+			}
+			nuevaLista.cont = lista.cont;
 		}
+
 		liberar(lista);
-		lista = nuevaLista;
+		lista = nuevaLista;		
 	}
 }
 
