@@ -4,9 +4,8 @@
 #include "memoryleaks.h"
 
 void inicializar(ListaJuegos& l) {
-	for (int i = 0; i < MAX_PARTIDAS; ++i) {
+	for (int i = 0; i < MAX_PARTIDAS; ++i) 
 		l.datos[i] = new Juego();
-	}
 }
 
 void insertar(ListaJuegos& l, Juego* j) {
@@ -25,9 +24,7 @@ void borrar(ListaJuegos& l, Juego* j) {
 	}
 
 	//Reordenando partidas
-	if (indice == l.cont - 1) {
-		l.cont--;
-	}
+	if (indice == l.cont - 1) l.cont--;
 	else {
 		for (int i = indice; i < l.cont; i++) {
 			l.datos[i] = l.datos[i+1];
@@ -38,9 +35,8 @@ void borrar(ListaJuegos& l, Juego* j) {
 }
 
 void liberar(ListaJuegos& l) {
-	for (int i = 0; i < l.cont; i++) {
+	for (int i = 0; i < l.cont; i++) 
 		delete l.datos[i];
-	}
 }
 
 bool juegoFinalizado(const Juego juego) {
@@ -83,9 +79,9 @@ bool siguienteTurno(Juego& juego) {
 
 std::string motivoFinPartida(const Juego juego) {
 	if (juego.ganado) {
-		return "¡¡¡ HAS GANADO !!!.\n";
+		return "¡¡¡ HAS GANADO !!!.";
 	}
-	else return "Has perdido. Es imposible realizar algun movimiento\n";
+	else return "Has perdido. Es imposible realizar algun movimiento";
 }
 
 //Funciones auxiliares para implementar las anteriores
@@ -235,6 +231,14 @@ void genera(Juego& juego, int pasos) {
 			mov.origen = { rand() % (juego.tablero.filas), rand() % (juego.tablero.columnas) };
 			juego.tablero.celdas[mov.origen.fila][mov.origen.columna].meta = true;
 			ponerFicha(juego.tablero, mov.origen);
+			std::cout << "Paso " << i + 1 << "\n";
+			mostrar(juego);
+			encontrarDireccionesPosiblesAleatorio(juego, mov.origen, direccionesPosibles, n);
+			if (n != 0) {
+				mov.dir = direccionesPosibles[rand() % n];
+				aplicarMovimientoAleatorio(juego, mov);
+			}
+			mostrar(juego);
 		}
 		else {
 			nFichas = 0;
@@ -242,16 +246,16 @@ void genera(Juego& juego, int pasos) {
 
 			encontrarFichas(juego.tablero, posFichas, nFichas);
 			mov.origen = posFichas[rand() % nFichas];
-		}
-		std::cout << "Paso " << i+1 << "\n";
-		mostrar(juego);
-		if (nFichas != 0) {
-			encontrarDireccionesPosiblesAleatorio(juego, mov.origen, direccionesPosibles, n);
-			if (n != 0) {
-				mov.dir = direccionesPosibles[rand() % n];
-				aplicarMovimientoAleatorio(juego, mov);
+			
+			std::cout << "Paso " << i + 1 << "\n";
+			if (nFichas != 0) {
+				encontrarDireccionesPosiblesAleatorio(juego, mov.origen, direccionesPosibles, n);
+				if (n != 0) {
+					mov.dir = direccionesPosibles[rand() % n];
+					aplicarMovimientoAleatorio(juego, mov);
+				}
 			}
+			mostrar(juego);
 		}
 	}
-
 }

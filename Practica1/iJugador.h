@@ -22,5 +22,6 @@ Jugador* buscar(ListaJugadores lista, std::string nombre);
 void insertar(ListaJugadores& lista, Jugador* j);
 void eliminar(ListaJugadores& lista, Jugador* j);
 void liberar(ListaJugadores& lista);
+void ordenar(ListaJugadores& lista);
 
 #endif
